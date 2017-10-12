@@ -14,28 +14,44 @@ source:
     - https://cran.r-project.org/src/contrib/Archive/jpeg/jpeg_{{ version }}.tar.gz
   sha256: d032befeb3a414cefdbf70ba29a6c01541c54387cc0a1a98a4022d86cbe60a16
 
-build:
-  number: 0
-  skip: true  # [win32]
 
+  # patches:
+   # List any patch files here
+   # - fix.patch
+
+build:
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+
+  # This is required to make R link correctly on Linux.
   rpaths:
     - lib/R/lib/
     - lib/
 
+
 requirements:
   build:
     - r-base
-    - posix                # [win]
-    - {{native}}toolchain  # [win]
-    - gcc                  # [not win]
+    - {{ compiler('c') }}        # [not win]
+    - {{native}}toolchain        # [win]
+    - {{posix}}filesystem        # [win]
+    - {{posix}}make
 
   run:
     - r-base
+    - {{native}}gcc-libs         # [win]
 
 test:
   commands:
-    - $R -e "library('jpeg')"  # [not win]
+    # You can put additional test commands to be run here.
+    - $R -e "library('jpeg')"           # [not win]
     - "\"%R%\" -e \"library('jpeg')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
 
 about:
   home: http://www.rforge.net/jpeg/
@@ -48,3 +64,25 @@ extra:
   recipe-maintainers:
     - johanneskoester
     - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: jpeg
+# Version: 0.1-8
+# Title: Read and write JPEG images
+# Author: Simon Urbanek <Simon.Urbanek@r-project.org>
+# Maintainer: Simon Urbanek <Simon.Urbanek@r-project.org>
+# Depends: R (>= 2.9.0)
+# Description: This package provides an easy and simple way to read, write and display bitmap images stored in the JPEG format. It can read and write both files and in-memory raw vectors.
+# License: GPL-2 | GPL-3
+# SystemRequirements: libjpeg
+# URL: http://www.rforge.net/jpeg/
+# Packaged: 2014-01-23 19:05:03 UTC; svnuser
+# NeedsCompilation: yes
+# Repository: CRAN
+# Date/Publication: 2014-01-23 20:17:07
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml
