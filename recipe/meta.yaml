@@ -40,6 +40,8 @@ requirements:
 
   host:
     - r-base
+    - {{native}}libjpeg-turbo            # [win]
+    - {{native}}jpeg                     # [not win]
 
   run:
     - r-base
